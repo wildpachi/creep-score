@@ -49,8 +49,6 @@ Game.prototype.events = function () {
 		hit_confirm: function (data) {
 			var target = game.creeps[data.team][data.unit];
 			target.setLife(data.life);
-			if (data.life <= 0)
-				target.toggleFlag("dead");
 		}
 	}
 
@@ -102,7 +100,7 @@ window.requestAnimFrame = (function(){
 // shim layer with setTimeout fallback
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 },{}],4:[function(require,module,exports){
-// Creep Object
+// Creep Object (Used by both server + client code)
 
 var CREEP_WIDTH  = 50;
 var CREEP_HEIGHT = 43;
@@ -161,10 +159,19 @@ function Creep (team,x,y,w,h,l) {
 
 		doHit: function (dmg) {
 			life -= dmg;
+			flags.dead = (life <= 0);
 		},
 
 		setLife: function (newlife) {
 			life = newlife;
+			flags.dead = (life <= 0);
+			if (flags.dead)
+				flags.draw = true;
+		},
+
+		revive: function () {
+			life = stats.max_life;
+			flags.dead = false;
 		},
 
 		getFlag: function (flag) {
@@ -180,6 +187,7 @@ function Creep (team,x,y,w,h,l) {
 exports.create = create;
 },{}],3:[function(require,module,exports){
 // Animation Controller
+
 var CreepDraw = require('../view/creepDraw');
 
 function animate(players, creeps) {
@@ -199,6 +207,8 @@ var canvas  = document.getElementById('canvas');
 var ctx     = canvas.getContext("2d");
 
 function drawSprite (creep) {
+	ctx.clearRect(creep.x-2, creep.y-2, creep.w+5, creep.h+5);
+
 	ctx.beginPath();
 	ctx.moveTo(creep.x, creep.y + creep.h);
 	ctx.lineTo(creep.x + creep.w, creep.y + creep.h);

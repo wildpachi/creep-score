@@ -4,6 +4,8 @@ var canvas  = document.getElementById('canvas');
 var ctx     = canvas.getContext("2d");
 
 function drawSprite (creep) {
+	ctx.clearRect(creep.x-2, creep.y-2, creep.w+5, creep.h+5);
+
 	ctx.beginPath();
 	ctx.moveTo(creep.x, creep.y + creep.h);
 	ctx.lineTo(creep.x + creep.w, creep.y + creep.h);

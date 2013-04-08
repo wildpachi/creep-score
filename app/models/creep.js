@@ -24,7 +24,7 @@ function Creep (team,x,y,w,h,l) {
 		max_life: l,
 		attack:   25,
 		cooldown: 40,
-		revive:   30*60			  
+		revive:   3000
 	};
 
 	var flags = {
@@ -43,6 +43,10 @@ function Creep (team,x,y,w,h,l) {
 					 max_life: stats.max_life };
 		},
 
+		getStats: function (stat) {
+			return stats[stat];
+		},
+
 		getLife: function () {
 			return life;
 		},
@@ -57,10 +61,19 @@ function Creep (team,x,y,w,h,l) {
 
 		doHit: function (dmg) {
 			life -= dmg;
+			flags.dead = (life <= 0);
 		},
 
 		setLife: function (newlife) {
 			life = newlife;
+			flags.dead = (life <= 0);
+			if (flags.dead)
+				flags.draw = true;
+		},
+
+		revive: function () {
+			life = stats.max_life;
+			flags.dead = false;
 		},
 
 		getFlag: function (flag) {

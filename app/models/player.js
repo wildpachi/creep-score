@@ -12,6 +12,10 @@ function Player (damage, startup, recovery) {
     return {
     	getDamage: function () {
     		return dmg;
+    	},
+
+    	getStartup: function () {
+    		return startup;
     	}
     };
 }

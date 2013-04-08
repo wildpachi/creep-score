@@ -48,8 +48,6 @@ Game.prototype.events = function () {
 		hit_confirm: function (data) {
 			var target = game.creeps[data.team][data.unit];
 			target.setLife(data.life);
-			if (data.life <= 0)
-				target.toggleFlag("dead");
 		}
 	}
 

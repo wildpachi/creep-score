@@ -1,7 +1,8 @@
 // Main Driver for the Game
 
 var Creep  = require('../models/creep')
-  , Player = require('../models/player');
+  , Player = require('../models/player')
+  , Clock  = require('../models/clock');
 
 // Constants
 
@@ -22,6 +23,8 @@ function Game (socket) {
 					 blue: creepArray("blue", BLU_HEIGHT)  };
 	this.ready   = false;
 
+	this.clock = new Clock();
+
 	this.socket  = socket;
 	this.warmup();
 }
@@ -35,6 +38,7 @@ Game.prototype.warmup = function warmup () {
 		self.ready = true;
 		self.player = Player.create(data.damage, data.startup, data.recovery);
 		self.events();
+		self.clock.start();
 	}
 
 	if (!self.ready)
@@ -50,8 +54,7 @@ Game.prototype.events = function events() {
 				for (var unit in self.creeps[team]) {
 					var c = self.creeps[team][unit];
 					if (c.didHit(data.x, data.y)) {
-						c.doHit(self.player.getDamage());
-						self.socket.emit('hit_confirm', {team: team, unit: unit, life: c.getLife()})
+						self.clock.add(self.player.getStartup(), 'hit', { team: team, unit: unit, creep: c, dmg: self.player.getDamage()});
 					}
 				}
 			}
@@ -60,6 +63,19 @@ Game.prototype.events = function events() {
 
 	self.socket.emit('new_game', self.getState());
 	self.socket.on('mouse_click', handlers.onMouseClick);
+	self.clock.on('hit', function(data) {
+		data.creep.setLife(data.creep.getLife() - data.dmg);
+		self.socket.emit('hit_confirm', {team: data.team, unit:data.unit, life:data.creep.getLife()})
+
+		if (data.creep.getFlag("dead"))
+			self.clock.add(data.creep.getStats("revive"), 'revive', data);
+	});
+
+
+	self.clock.on('revive', function(data) {
+		data.creep.revive();
+		self.socket.emit('hit_confirm', {team: data.team, unit:data.unit, life:data.creep.getLife()})
+	})
 };
 
 // Business
