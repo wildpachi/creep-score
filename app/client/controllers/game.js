@@ -11,8 +11,7 @@ function Game () {
 	this.canvas  = document.getElementById('canvas');
 	this.ctx     = this.canvas.getContext("2d");
 
-	this.creeps = { red: [], blue: [] };
-
+	this.creeps  = { red: [], blue: [] };
 	this.socket  = io.connect();
 }
 
