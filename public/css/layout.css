@@ -1,19 +1,61 @@
+body {
+  font-size: 12pt;
+  font-family: 'helvetica', 'arial';
+  background: white;
 
-div#gamearea {
-  width: 640px;
-  height: 480px;
-  margin: auto;
-  border: 1px solid black;
-  padding: 5px;
+  -webkit-user-select: none; /* Chrome/Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
+
+  /* Rules below not implemented in browsers yet */
+  -o-user-select: none;
+  user-select: none;
 }
 
-div.minion {
-  margin: 5px;
-  float: left;
-  width:  40px;
-  height: 10px;
-  font-size: 8pt;
-  border: 1px dotted black;
+div#header {
+  padding: 0px 15px;
   text-align: center;
-  padding: 15px 0px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  
+  font-size: 10pt;
+  font-weight: normal;
+}
+
+div#navbar {
+  width: 480px;
+  margin: 0px auto;
+  z-index: 2;
+}
+
+div#header h1 {
+  margin: 0px;
+  padding: 0px;
+  font-weight: 700;
+  text-indent: -10;
+  font-size: 32pt;
+  margin-bottom: -3px;
+}
+
+div#header a {
+  text-decoration: none;
+  color: #0088cc;  
+}
+
+div#content {
+  margin: 0px auto;
+  width: 342px;
+  border: 1px solid #AAA;
+}
+
+div#scoreboard {
+  height: 15px;
+  padding: 10px 25px;
+  background: #999;
+  color: white;
+  font-weight: bold;
+}
+
+div#scoreboard #score {
+  float: right;
 }

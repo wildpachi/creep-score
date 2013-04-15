@@ -9,6 +9,8 @@ function Player (damage, startup, recovery) {
       , sup = startup
       , rec = recovery;
 
+    var score = 0;
+
     return {
     	getDamage: function () {
     		return dmg;
@@ -16,6 +18,14 @@ function Player (damage, startup, recovery) {
 
     	getStartup: function () {
     		return startup;
+    	},
+
+    	getScore: function () {
+    		return score;
+    	},
+
+    	incScore: function () {
+    		score += 1;
     	}
     };
 }

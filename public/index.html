@@ -4,12 +4,28 @@
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="/js/client.js"></script>
 	<link rel="stylesheet" type="text/css" href="/css/layout.css"/>
-  
   </head>
   <body>
-    <div style="width:700px; margin: auto">
-  	 <canvas id="canvas" height="480" width="340" style="border: 1px solid black; margin:auto;"/>
+    <div id="wrap">
+      <div id="header">
+        <a href="https://github.com/wildpachi/creep-score/"><h1>Creep Score</h1></a>
+            An experimental Node.js web game based around the last hit mechanic.
+      </div>
+      <div id="content">
+          
+        <div id="playarea">
+          <canvas id="canvas" height="480" width="340"></canvas>
+        </div>
+        <div id="scoreboard" class="ready">
+          <div id="score">
+            <span id="cs">0</span> / 
+            <span id="deny">0</span>
+          </div>
+          <div id="time">00:00</div>
+        </div>
+      </div>
     </div>
     <script type="text/javascript" src="/js/bundle.js"></script>
   </body>
