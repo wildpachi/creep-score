@@ -32,6 +32,12 @@ Game.prototype.initCreeps = function (creeps) {
 	}
 };
 
+Game.prototype.html = {
+	scoreboard : {	time : $('div#scoreboard div#time'), 
+					score: $('div#scoreboard div#score')
+				}
+};
+
 /*
 **  Event Handlers
 */
@@ -42,6 +48,12 @@ Game.prototype.events = function () {
 		new_game: function (data) {
 			self.initCreeps(data.creeps);
 			game.animate();
+		},
+
+		sync_score: function (data) {
+			console.log(data);
+			$(self.html.scoreboard.time).text(data.time);
+			$(self.html.scoreboard.score).text(data.score);
 		},
 
 		hit_confirm: function (data) {
@@ -58,6 +70,7 @@ Game.prototype.events = function () {
 
 	this.socket.on('new_game',    handlers.new_game);
 	this.socket.on('hit_confirm', handlers.hit_confirm);
+	this.socket.on('sync_scoreboard', handlers.sync_score);
 
 	$(this.canvas).click( function (e) {
 		game.socket.emit('mouse_click', {

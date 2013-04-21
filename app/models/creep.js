@@ -23,7 +23,7 @@ function Creep (team,x,y,w,h,l) {
 	var stats = {
 		max_life: l,
 		attack:   25,
-		cooldown: 40,
+		cooldown: 1000,
 		revive:   3000
 	};
 
@@ -32,8 +32,9 @@ function Creep (team,x,y,w,h,l) {
 		dead: false
 	}
 
-	var life = stats.max_life;
-	var team = team;
+	var life   = stats.max_life;
+	var team   = team;
+	var target = null;
 
 	return {
 		getState: function () {
@@ -82,6 +83,14 @@ function Creep (team,x,y,w,h,l) {
 
 		toggleFlag: function (flag) {
 			flags[flag] = !flags[flag];
+		},
+
+		getTarget: function () {
+			return target;
+		},
+
+		setTarget: function (t) {
+			target = t;
 		}
 	}
 }

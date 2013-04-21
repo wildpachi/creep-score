@@ -12,8 +12,7 @@ function Game () {
 	this.canvas  = document.getElementById('canvas');
 	this.ctx     = this.canvas.getContext("2d");
 
-	this.creeps = { red: [], blue: [] };
-
+	this.creeps  = { red: [], blue: [] };
 	this.socket  = io.connect();
 }
 
@@ -34,6 +33,12 @@ Game.prototype.initCreeps = function (creeps) {
 	}
 };
 
+Game.prototype.html = {
+	scoreboard : {	time : $('div#scoreboard div#time'), 
+					score: $('div#scoreboard div#score')
+				}
+};
+
 /*
 **  Event Handlers
 */
@@ -44,6 +49,12 @@ Game.prototype.events = function () {
 		new_game: function (data) {
 			self.initCreeps(data.creeps);
 			game.animate();
+		},
+
+		sync_score: function (data) {
+			console.log(data);
+			$(self.html.scoreboard.time).text(data.time);
+			$(self.html.scoreboard.score).text(data.score);
 		},
 
 		hit_confirm: function (data) {
@@ -60,6 +71,7 @@ Game.prototype.events = function () {
 
 	this.socket.on('new_game',    handlers.new_game);
 	this.socket.on('hit_confirm', handlers.hit_confirm);
+	this.socket.on('sync_scoreboard', handlers.sync_score);
 
 	$(this.canvas).click( function (e) {
 		game.socket.emit('mouse_click', {
@@ -81,25 +93,7 @@ Game.prototype.animate = function () {
 // Driver
 var game = new Game();
 game.begin();
-},{"../view/requestAnimFrame":2,"./animator":3,"../../models/creep":4}],2:[function(require,module,exports){
-// Animation function with fallbacks
-
-exports.requestAnimFrame = function (f) {
-	return requestAnimFrame(f);
-}
-
-window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame    ||
-          function( callback ){
-            window.setTimeout(callback, 1000 / 60);
-          };
-})();
-
-// shim layer with setTimeout fallback
-// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-},{}],4:[function(require,module,exports){
+},{"../view/requestAnimFrame":2,"../../models/creep":3,"./animator":4}],3:[function(require,module,exports){
 // Creep Object (Used by both server + client code)
 
 var CREEP_WIDTH  = 50;
@@ -125,8 +119,8 @@ function Creep (team,x,y,w,h,l) {
 	var stats = {
 		max_life: l,
 		attack:   25,
-		cooldown: 40,
-		revive:   30*60			  
+		cooldown: 1000,
+		revive:   3000
 	};
 
 	var flags = {
@@ -134,8 +128,9 @@ function Creep (team,x,y,w,h,l) {
 		dead: false
 	}
 
-	var life = stats.max_life;
-	var team = team;
+	var life   = stats.max_life;
+	var team   = team;
+	var target = null;
 
 	return {
 		getState: function () {
@@ -143,6 +138,10 @@ function Creep (team,x,y,w,h,l) {
 					 w: display.w, h: display.h,
 					 life: life, team: team,
 					 max_life: stats.max_life };
+		},
+
+		getStats: function (stat) {
+			return stats[stat];
 		},
 
 		getLife: function () {
@@ -180,12 +179,38 @@ function Creep (team,x,y,w,h,l) {
 
 		toggleFlag: function (flag) {
 			flags[flag] = !flags[flag];
+		},
+
+		getTarget: function () {
+			return target;
+		},
+
+		setTarget: function (t) {
+			target = t;
 		}
 	}
 }
 
 exports.create = create;
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
+// Animation function with fallbacks
+
+exports.requestAnimFrame = function (f) {
+	return requestAnimFrame(f);
+}
+
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+// shim layer with setTimeout fallback
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+},{}],4:[function(require,module,exports){
 // Animation Controller
 
 var CreepDraw = require('../view/creepDraw');

@@ -9,7 +9,9 @@ function Player (damage, startup, recovery) {
       , sup = startup
       , rec = recovery;
 
-    var score = 0;
+    var team = "red";
+
+    var score = {hit: 0, deny: 0};
 
     return {
     	getDamage: function () {
@@ -21,12 +23,12 @@ function Player (damage, startup, recovery) {
     	},
 
     	getScore: function () {
-    		return score;
+    		return score.hit + " / " + score.deny;
     	},
 
-    	incScore: function () {
-    		score += 1;
-    	}
+        incScore: function (creep) {
+            creep != team ? score.hit +=1 : score.deny += 1;
+        }
     };
 }
 
